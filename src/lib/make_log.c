@@ -26,8 +26,8 @@ void check(char *message, int success, int exitcon){
 }
 
 void filelog(const char *message, int success){
-    // FILE *file = fopen("log.txt","a");
-    // check("Opening log file", file != NULL, 1);
-    // fprintf(file, "asdfadsf");
-    // fclose(file);
+    FILE *file = fopen("log.txt","a");
+    check("Opening log file", file != NULL, 1);
+    fprintf(file, "asdfadsf");
+    fclose(file);
 }
