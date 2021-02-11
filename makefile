@@ -4,6 +4,9 @@ build:
 run:
 	./startserver.sh | ./server01
 
+localhost:
+	echo 127.0.0.1 | ./server01
+
 clean:
 	rm server01
 

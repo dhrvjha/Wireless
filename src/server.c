@@ -22,10 +22,10 @@ int main(){
     check("Setting up socket", setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) >= 0, 1);
     check("Binding",bind(sockfd, (struct sockaddr *)&addr, sizeof(addr))+1 ,1);
     check("Listening", (listen(sockfd, 3))+1, 1);
-    check("Accepting", (new_socket = accept(sockfd, (struct sockaddr *)&addr, (socklen_t*)&(server_size))) >= 0, 1);
+    check("Accepting", (new_socket = accept(sockfd, (struct sockaddr *)&addr, (socklen_t*)&(server_size))) >= 0, 0);
     printf("Sending message : %s", message);
     send(new_socket, message,strlen(message), 0);
-    printf("Press any key to exit....");
+    printf("Press any key to exit....\n");
     getchar();
 
     return 0;
