@@ -22,7 +22,7 @@ void render_dash(const char *message){
 }
 
 void filelog(const char *message, int success){
-    FILE *file = fopen("/tmp/log.txt", "a");
+    FILE *file = fopen("/tmp/HTTPserver.log", "a");
     render_dash(message);
     if (file == NULL){
         printf("Error Opening log file\n");
