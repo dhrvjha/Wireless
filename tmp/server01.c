@@ -29,7 +29,7 @@ void setup_server(){
     char message[] = "Hello from server";
     int sockfd, opt=1;
     // struct ip_config config = input();
-    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_addr.s_addr = 0;
     server.sin_family = AF_INET;
     server.sin_port = htons(PORT);
 

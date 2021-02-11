@@ -5,29 +5,46 @@
 #ifndef render_size
 #define render_size 25
 #endif
-void render_dash(char *message){
-    int size = strlen(message) - render_size;
-    if (size > 0)
-        while (size--)
-            printf("-");
-    else
-        printf("----");
-}
 
-void check(char *message, int success, int exitcon){
-    render_dash(message);
-    if (success)    // success == 1
-        printf("OK\n");
+
+char *dash;
+void render_dash(const char *message){
+    int size = strlen(message) - render_size;
+    if (size > 0){
+        dash = (char*)malloc(size * sizeof(char) + 1);
+        for (int i=0;i<size;i++)
+            dash[i] = '-';
+    }
     else{
-        printf("ERROR\n");
-        if (exitcon)
-            exit(EXIT_FAILURE);
+        dash = (char*)malloc(5 * sizeof(char) +1);
+        dash = "-----";
     }
 }
 
 void filelog(const char *message, int success){
-    FILE *file = fopen("log.txt","a");
-    check("Opening log file", file != NULL, 1);
-    fprintf(file, "asdfadsf");
+    FILE *file = fopen("/tmp/log.txt", "a");
+    render_dash(message);
+    if (file == NULL){
+        printf("Error Opening log file\n");
+        return;
+    }
+    fputs(message, file);
+    fputs(dash, file);
+    if (success)
+        fputs("OK", file);
+    else
+        fputs("ERROR", file);
+    fputs("\n", file);
     fclose(file);
+}
+
+void check(char *message, int success, int exitcon){
+    filelog(message, success);
+    if (success)
+        printf("%s%sOK\n", message, dash);
+    else{
+        printf("%s%sERROR\n", message, dash);
+        if (exitcon)
+            exit(EXIT_FAILURE);
+    }
 }

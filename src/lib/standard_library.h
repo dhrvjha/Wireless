@@ -9,7 +9,8 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <netinet/in.h> 
+#include <netinet/in.h>
+#include <netdb.h>
 
 #define PORT_A 8000 
 #define PORT 8080

@@ -1,8 +1,8 @@
 build:
-	gcc server/server01.c server/make_log.c -o server01
+	gcc src/server.c src/lib/make_log.c -o server01
 
 run:
-	./server01
+	./startserver.sh | ./server01
 
 clean:
 	rm server01
