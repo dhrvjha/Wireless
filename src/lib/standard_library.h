@@ -1,4 +1,6 @@
 //standard library
+#ifndef COMMON_H
+#define COMMON_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +14,9 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-#define PORT_A 8000 
-#define PORT 8080
+#define PORT_A 8080 
+#define PORT "8000"
 #define PORT_B 8040
+#define MAX_BACKLOG 10
+
+#endif //COMMON_H

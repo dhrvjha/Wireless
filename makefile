@@ -1,19 +1,25 @@
+fout=server
+compiler=gcc
+logfile=/tmp/HTTPserver.log
+input=server.c
+
 build:
-	gcc src/server.c src/lib/make_log.c -o server01
+	${compiler} src/$(input) src/lib/make_log.c -o ${fout}
 
 run:
-	./startserver.sh | ./server01
+	./getIP.sh | ./${fout}
 
 localhost:
-	echo 127.0.0.1 | ./server01
+	echo 127.0.0.1 | ./${fout}
 
+log:
+	cat ${logfile}
 clean:
-	rm server01
+	rm ${fout}
 
 cleanall:
-	rm server01
-	ls -A | grep .out | xargs rm
-	ls -A | grep .log | xargs rm
+	rm ${fout}
+	rm ${logfile}
 
 make commit:
 	git add .

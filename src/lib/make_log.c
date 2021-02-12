@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #ifndef render_size
 #define render_size 25
 #endif
 
 
+int errstatus;
 char *dash;
 void render_dash(const char *message){
     int size = strlen(message) - render_size;
@@ -32,18 +34,21 @@ void filelog(const char *message, int success){
     fputs(dash, file);
     if (success)
         fputs("OK", file);
-    else
-        fputs("ERROR", file);
+    else{
+        fputs("ERROR: ", file);
+        fputs(strerror(errstatus), file);
+    }
     fputs("\n", file);
     fclose(file);
 }
 
 void check(char *message, int success, int exitcon){
+    errstatus = errno;
     filelog(message, success);
     if (success)
         printf("%s%sOK\n", message, dash);
     else{
-        printf("%s%sERROR\n", message, dash);
+        printf("%s%sERROR: %s\n", message, dash, strerror(errstatus));
         if (exitcon)
             exit(EXIT_FAILURE);
     }
