@@ -19,7 +19,7 @@ int ready_server(struct sockaddr_in server, char *ip){
     check("setting socket", (sockfd=socket(res->ai_family, res->ai_socktype, res->ai_protocol))>=0, 1);
     check("binding socket to port", bind(sockfd, res->ai_addr, res->ai_addrlen)>=0, 1);
     check("setting listener", listen(sockfd, MAX_BACKLOG)>=0, 1);
-
+    freeaddrinfo(res);
     return sockfd;
 }
 
@@ -29,12 +29,36 @@ int messageClient(int sockfd){
     socklen_t addr_size = sizeof connector;
     int new_sockfd;
     check("accpeting",(new_sockfd=accept(sockfd, (struct sockaddr*)&connector, &addr_size))>=0, 1);
+    fflush(stdout);
     char brow[4096];
-    if(recv(new_sockfd, brow, 4090, 0) == 0)
-        printf("Connection closed\n");
+
+    FILE *file = fopen(LOGFILE, "a");
+    if (recv(new_sockfd, brow, 4090, 0) != 0){
+        printf("# %s", brow);
+        fputs(brow, file);
+    }
+    fclose(file);
     send(new_sockfd, mes, strlen(mes), 0);
     close(new_sockfd);
 }
+
+// int messageClient(int sockfd, FILE *page){
+//     char *mes = "Hello from server\r\n\r\n";
+//     struct sockaddr_storage connector;
+//     socklen_t addr_size = sizeof connector;
+//     int new_sockfd;
+//     check("accpeting",(new_sockfd=accept(sockfd, (struct sockaddr*)&connector, &addr_size))>=0, 1);
+//     char brow[4096];
+
+//     FILE *file = fopen(LOGFILE, "a");
+//     if (recv(new_sockfd, brow, 4090, 0) != 0){
+//         printf("# %s", brow);
+//         fputs(brow, file);
+//     }
+//     fclose(file);
+//     send(new_sockfd, mes, strlen(mes), 0);
+//     close(new_sockfd);
+// }
 
 int main(int argc, char **argv){
     filelog("Starting server", 1);
@@ -50,7 +74,8 @@ int main(int argc, char **argv){
         ip = argv[1];
 
     sockfd = ready_server(addr, ip);
-
+    printf("Visit : http://%s:%s\n", ip, PORT);
+    fflush(stdout);
     while (1){
         messageClient(sockfd);
     }

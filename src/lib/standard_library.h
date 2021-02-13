@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+#define LOGFILE "/tmp/HTTPserver.log"
 #define PORT_A 8080 
 #define PORT "8000"
 #define PORT_B 8040
