@@ -2,9 +2,10 @@ fout=server
 compiler=gcc
 logfile=/tmp/HTTPserver.log
 input=server.c
+additonal_lib=src/lib/make_log.c src/lib/readyserver.c src/lib/accept.c src/lib/parser.c src/lib/handler.c
 
 build:
-	${compiler} src/$(input) src/lib/make_log.c -o ${fout}
+	${compiler} src/$(input) $(additonal_lib) -o ${fout}
 
 run:
 	./getIP.sh | ./${fout}
@@ -23,4 +24,4 @@ cleanall:
 
 make commit:
 	git add .
-	git commit -m
+	git commit

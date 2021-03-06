@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 
 #ifndef render_size
@@ -48,7 +48,7 @@ void check(char *message, int success, int exitcon){
     if (success)
         printf("%s%sOK\n", message, dash);
     else{
-        printf("%s%sERROR: %s\n", message, dash, strerror(errstatus));
+        printf("%s%sERROR(%d): %s\n", message, dash,errstatus,strerror(errstatus));
         if (exitcon)
             exit(EXIT_FAILURE);
     }
