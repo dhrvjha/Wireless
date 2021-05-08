@@ -1,15 +1,19 @@
 #include "standard_library.h"
 #include <dirent.h>
 
+char response_headers[]= 
+"Connection: Keep-Alive\nContent-Encoding: gzip\nContent-Type: text/html; charset=utf-8\nDate: Wed, 07 Mar 2021 10:55:30 GMT\nVary: Cookie, Accept-Encoding\n\n";
+
+char status[10];
 char anchor_html[] = "<a href=\"";
 char anchor_close_html[] = "\"></a>";
-char header_html[] = "<!DOCTYPE html><html lang=\"en\" dir=\"ltr\"><head>";
+char header_html[] = "<!DOCTYPE html>\n<html lang=\"en\" dir=\"ltr\">\n<head>\n";
 char title_html[30];
-char body_html[] = "</head><body><h4>";
+char body_html[] = "</head>\n<body>\n<h4>\n";
 char *folder_html;
-char close_h4_html[] = "</h4>";
+char close_h4_html[] = "</h4>\n";
 char content_html[4096];
-char footer_html[] = "</body></html>";
+char footer_html[] = "</body>\n</html>\n";
 
 
 struct dirent* find_file(char *path, char *URI){
@@ -37,7 +41,7 @@ int responde_folder(char *path){
     memset(content_html, '\0', sizeof(content_html));
     while (entity != NULL){
         strcat(content_html, entity->d_name);
-        strcat(content_html, "<br>");
+        strcat(content_html, "<br>\n");
         entity = readdir(dir);
     }
 
@@ -49,7 +53,7 @@ int responde_file(char *path_to_file){
     char c;
     int i=0;
     memset(content_html, '\0', sizeof(content_html));
-    while ((c = fgetc(file)) != 0 || c != NULL){
+    while ((c = fgetc(file)) != 0){
         content_html[i++] = c;
         if (i > 4094)
             break;
@@ -92,21 +96,40 @@ int search_URI(char *URI){
     return STATUS_NOT_FOUND;
 }
 
+void getfoldername(char *dest, char *src){
+    int lastoccurenceofFslash=0;
+    for (int i=0;src[i] !='\0';i++){
+        if (src[i] == '/')
+            lastoccurenceofFslash = i;
+    }
+    for (int j=0, i=lastoccurenceofFslash+1; src[i]!='\0';i++, j++){
+        dest[j] = src[i];
+    }
+}
 
 
 char* handler(char *request){
     char *everything = malloc(sizeof(char)*10000);
     REQUEST rq = HTTPrequest_parser(request);
-    printf("RequestURI at handler --> %s\n", rq.URI);
     int status_code;
-    if (strcmp(rq.URI, "/") == 0)
+    if (strcmp(rq.URI, "/") == 0){
         status_code = responde_folder(current_path);
+        folder_html = malloc(sizeof(char)*30);
+        getfoldername(folder_html, current_path);
+    } else if (strcmp(rq.URI, "/favicon.ico")){
+        FILE *file = fopen("favicon.ico", "r");
+        char buffer;
+        strcat(everything, "200 OK");
+        strcat(everything, response_headers);
+        while ((buffer = fgetc(file)) != '\0'){
+            strcat(everything, &buffer);
+        }
+        strcat(everything, "\r\n\r\n");
+        return everything;
+    }
     else
         status_code = search_URI(rq.URI);
-    printf("Status Code --> %d\n", status_code);
-    char status[10];
     sprintf(status, "%d", status_code);
-    printf("Status Code as string --> %s\n", status);
     switch (status_code)
     {
     case STATUS_OK:
@@ -118,7 +141,9 @@ char* handler(char *request){
     default:
         break;
     }
+    int co=0;
     strcat(everything, status);
+    strcat(everything, response_headers);
     strcat(everything, header_html);
     strcat(everything, title_html);
     strcat(everything, body_html);
@@ -126,8 +151,7 @@ char* handler(char *request){
     strcat(everything, close_h4_html);
     strcat(everything, content_html);
     strcat(everything, footer_html);
-
-
+    strcat(everything, "\r\n\r\n");
     return everything;
 }
 

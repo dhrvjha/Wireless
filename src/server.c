@@ -21,13 +21,6 @@
 //     close(new_sockfd);
 // }
 
-void getworkspace_file_name(){
-    char filename[30];
-    memset(filename, '\0', sizeof(filename));
-    for (int i=0; current_path[i] !='\0';i++){
-        
-    }
-}
 
 int main(int argc, char **argv){
     printf("PID: %d\n", getpid());

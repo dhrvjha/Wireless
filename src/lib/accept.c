@@ -31,14 +31,17 @@ void* messageClient(void *sockptr){
     fflush(stdout);
     char request[4096];
     FILE *file = fopen(LOGFILE, "a");
+    // char response_str[]  = "<html>HELLO WORLD</html>";
+    char *response_str ;
     if (recv(new_sockfd, request, 4090, 0) != 0){
         printf("%s", request);
         fputs(request, file);
+        response_str = handler(request);
+        fputs(response_str, file);
     }
-    char *response_str = handler(request);
-    // char response_str[]  = "<html>HELLO WORLD</html>";
     size_t response_size = strlen(response_str);
     fclose(file);
+    printf("%s\n", response_str);
     send(new_sockfd, response_str, response_size, 0);
     close(new_sockfd);
 }
