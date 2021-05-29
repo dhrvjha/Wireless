@@ -42,14 +42,17 @@ void filelog(const char *message, int success){
     fclose(file);
 }
 
-void check(char *message, int success, int exitcon){
+int check(char *message, int success, int exitcon){
     errstatus = errno;
     filelog(message, success);
-    if (success)
+    if (success) {
         printf("%s%sOK\n", message, dash);
+        return 0;
+    }
     else{
         printf("%s%sERROR(%d): %s\n", message, dash,errstatus,strerror(errstatus));
         if (exitcon)
             exit(EXIT_FAILURE);
     }
+    return 1;
 }

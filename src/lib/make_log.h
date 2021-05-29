@@ -1,3 +1,4 @@
+
 #ifndef MAKELOG_H
 #define MAKELOG_H
 
@@ -15,6 +16,6 @@ void filelog(char *message, int success);
         -- if exitcon == 1
             -- exit the program with 1
 */
-void check(char *message, int success, int exitcon);
+int check(char *message, int success, int exitcon);
 
 #endif  //MAKELOG_H

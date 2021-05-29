@@ -1,14 +1,14 @@
 #include "standard_library.h"
 #include <dirent.h>
 
-char response_headers[]= 
-"Connection: Keep-Alive\nContent-Encoding: gzip\nContent-Type: text/html; charset=utf-8\nDate: Wed, 07 Mar 2021 10:55:30 GMT\nVary: Cookie, Accept-Encoding\n\n";
+// char response_headers[]=
+// "Connection: Keep-Alive\nContent-Encoding: gzip\nContent-Type: html; charset=utf-8\nDate: Wed, 07 Mar 2021 10:55:30 GMT\nVary: Cookie, Accept-Encoding\n\n";
 
 char status[10];
 char anchor_html[] = "<a href=\"";
 char anchor_close_html[] = "\"></a>";
-char header_html[] = "<!DOCTYPE html>\n<html lang=\"en\" dir=\"ltr\">\n<head>\n";
-char title_html[30];
+char header_html[] = "<!DOCTYPE html PUBLIC \" - //IETF//DTD HTML 2.0//EN\">\n<html lang=\"en\" dir=\"ltr\">\n<head>\n";
+                     char title_html[30];
 char body_html[] = "</head>\n<body>\n<h4>\n";
 char *folder_html;
 char close_h4_html[] = "</h4>\n";
@@ -58,13 +58,14 @@ int responde_file(char *path_to_file){
         if (i > 4094)
             break;
     }
-    
+
     content_html[i] = '\0';
     fclose(file);
     return STATUS_OK;
 }
 
 int search_URI(char *URI){
+    printf("\n\nURI %s\n\n", URI);
     char *bf = strtok(URI, "/");
     char path[1024] = {0};
     strcat(path, current_path);
@@ -112,20 +113,28 @@ char* handler(char *request){
     char *everything = malloc(sizeof(char)*10000);
     REQUEST rq = HTTPrequest_parser(request);
     int status_code;
+
+    // home path
     if (strcmp(rq.URI, "/") == 0){
         status_code = responde_folder(current_path);
         folder_html = malloc(sizeof(char)*30);
         getfoldername(folder_html, current_path);
-    } else if (strcmp(rq.URI, "/favicon.ico")){
-        FILE *file = fopen("favicon.ico", "r");
-        char buffer;
-        strcat(everything, "200 OK");
-        strcat(everything, response_headers);
-        while ((buffer = fgetc(file)) != '\0'){
-            strcat(everything, &buffer);
-        }
-        strcat(everything, "\r\n\r\n");
-        return everything;
+
+    // favicon.ico is icon for favourites icon
+    } else if (strcmp(rq.URI, "/favicon.ico")==0){
+        // FILE *file;
+        // if (check("opening favico", (file=fopen("favicon.ico", "r"))!=NULL, 0)==0)
+        //     return "";
+        // char buffer;
+        // // strcat(everything, "200 OK");
+        // // strcat(everything, response_headers);
+        // while ((buffer = fgetc(file)) != '\0'){
+        //     strcat(everything, &buffer);
+        // }
+        // strcat(everything, "\r\n\r\n");
+
+        // return everything;
+        return "";
     }
     else
         status_code = search_URI(rq.URI);
@@ -143,7 +152,7 @@ char* handler(char *request){
     }
     int co=0;
     strcat(everything, status);
-    strcat(everything, response_headers);
+    // strcat(everything, response_headers);
     strcat(everything, header_html);
     strcat(everything, title_html);
     strcat(everything, body_html);
@@ -158,7 +167,7 @@ char* handler(char *request){
 void printrequest(char *request){
     REQUEST rq = HTTPrequest_parser(request);
     printf("%d\n%s\n",rq.method, rq.URI);
-    
+
     printf("%s\n", rq.URI);
 
 }

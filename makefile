@@ -22,6 +22,9 @@ cleanall:
 	rm ${fout}
 	rm ${logfile}
 
-make commit:
+commit:
 	git add .
 	git commit
+
+install:
+	make build && sudo cp server /bin && sudo cp wireless /bin
